@@ -1,11 +1,5 @@
 package main
 
-const (
-	hackeroneUrl = "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/hackerone_data.json"
-	bugcrowdUrl  = "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/bugcrowd_data.json"
-	intigritiUrl = "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/intigriti_data.json"
-)
-
 type Bugcrowd []struct {
 	Name              string `json:"name"`
 	URL               string `json:"url"`
