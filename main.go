@@ -1,26 +1,74 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	getReq("https://google.com")
+
+	platforms := map[string]string{
+		"hackerone": "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/hackerone_data.json",
+		"bugcrowd":  "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/bugcrowd_data.json",
+		"intigriti": "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/intigriti_data.json",
+	}
+
+	for platform, url := range platforms {
+		body := getReq(url)
+		if fileExists(platform + ".json") {
+			//here we have to compare two jsons, send diff notif then replace the new struct/json with .json file
+
+			// content := loadFile(platform + ".json")
+			// oldData, err := json.Marshal(content)
+			// checkError(err)
+
+		} else {
+			saveStringToFile(platform+".json", body)
+		}
+	}
 }
 
-func getReq(url string) {
-	response, err := http.Get(url)
-	if err != nil {
-		log.Fatalln(err)
+func fileExists(path string) bool {
+	if _, err := os.Stat(path); err == nil {
+		return true
+	} else {
+		return false
 	}
-	defer response.Body.Close()
+}
 
-	rawBody, err := ioutil.ReadAll(response.Body)
+func checkError(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(string(rawBody))
+}
+
+func getReq(url string) string {
+	response, err := http.Get(url)
+	checkError(err)
+	defer response.Body.Close()
+	rawBody, err := ioutil.ReadAll(response.Body)
+	checkError(err)
+	return string(rawBody)
+}
+
+func saveStringToFile(path string, content string) {
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0644)
+	checkError(err)
+	defer file.Close()
+	fmt.Fprint(file, content)
+}
+
+func loadFile(path string) string {
+	content, err := ioutil.ReadFile(path)
+	checkError(err)
+	return string(content)
+}
+
+func stringToStruct(data string, platform *Bugcrowd) {
+	err := json.Unmarshal([]byte(data), platform)
+	checkError(err)
 }
