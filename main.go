@@ -11,25 +11,40 @@ import (
 
 func main() {
 
-	platforms := map[string]string{
+	platformUrls := map[string]string{
 		"hackerone": "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/hackerone_data.json",
 		"bugcrowd":  "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/bugcrowd_data.json",
 		"intigriti": "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/intigriti_data.json",
 	}
-
-	for platform, url := range platforms {
+	for platformName, url := range platformUrls {
 		body := getReq(url)
-		if fileExists(platform + ".json") {
+		if fileExists(platformName + ".json") {
 			//here we have to compare two jsons, send diff notif then replace the new struct/json with .json file
-
-			// content := loadFile(platform + ".json")
+			// content := loadFile(platformName + ".json")
 			// oldData, err := json.Marshal(content)
 			// checkError(err)
 
+			// var newData interface{}
+			// switch platformName {
+			// case "bugcrowd":
+			// 	newData = stringToStruct[Bugcrowd](body)
+			// case "hackerone":
+			// 	newData = stringToStruct[Hackerone](body)
+			// case "intigriti":
+			// 	newData = stringToStruct[Intigriti](body)
+			// }
+
 		} else {
-			saveStringToFile(platform+".json", body)
+			saveStringToFile(platformName+".json", body)
 		}
 	}
+}
+
+func stringToStruct[platforms Bugcrowd | Hackerone | Intigriti](data string) platforms {
+	var p platforms
+	err := json.Unmarshal([]byte(data), &p)
+	checkError(err)
+	return p
 }
 
 func fileExists(path string) bool {
@@ -66,9 +81,4 @@ func loadFile(path string) string {
 	content, err := ioutil.ReadFile(path)
 	checkError(err)
 	return string(content)
-}
-
-func stringToStruct(data string, platform *Bugcrowd) {
-	err := json.Unmarshal([]byte(data), platform)
-	checkError(err)
 }
