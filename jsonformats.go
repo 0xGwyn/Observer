@@ -1,6 +1,6 @@
 package main
 
-type Bugcrowd []struct {
+type Bugcrowd struct {
 	Name              string `json:"name"`
 	URL               string `json:"url"`
 	AllowsDisclosure  bool   `json:"allows_disclosure"`
@@ -19,7 +19,7 @@ type Bugcrowd []struct {
 	} `json:"targets"`
 }
 
-type Intigriti []struct {
+type Intigriti struct {
 	ID                   string `json:"id"`
 	Name                 string `json:"name"`
 	CompanyHandle        string `json:"company_handle"`
@@ -49,7 +49,7 @@ type Intigriti []struct {
 	} `json:"targets"`
 }
 
-type Hackerone []struct {
+type Hackerone struct {
 	AllowsBountySplitting             bool    `json:"allows_bounty_splitting"`
 	AverageTimeToBountyAwarded        float64 `json:"average_time_to_bounty_awarded"`
 	AverageTimeToFirstProgramResponse float64 `json:"average_time_to_first_program_response"`
