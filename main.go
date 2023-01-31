@@ -22,6 +22,7 @@ func main() {
 
 	for platformName, url := range platformUrls {
 		body := getReq(url)
+
 		//either create the file if does not exist or check for changes
 		if fileExists(platformName + ".json") {
 			content := loadFileToString(platformName + ".json")
@@ -30,7 +31,7 @@ func main() {
 			changes := compareTargets(content, body, platformName)
 
 			//send changes to the discord server
-			sendNotif(discordURL, changes)
+			sendNotif(discordURL, platformName, changes)
 
 			//replace newest data with the old one
 			saveStringToFile(platformName+".json", body)
@@ -42,43 +43,84 @@ func main() {
 	}
 }
 
-func compareTargets(old, new, platform string) map[string][]string {
-	changes := make(map[string][]string)
+type companyChanges struct {
+	name    string
+	url     string
+	changes []string
+}
+
+func sendNotif(url, platform string, changes []companyChanges) {
+	// to be implemented
+}
+
+func compareTargets(old, new, platform string) []companyChanges {
+	changes := []companyChanges{}
+
 	//remove junk characters for comparison
 	old = strings.Replace(strings.Replace(strings.Replace(old, "\\t", "", -1), "\\\"", "", -1), "", "", -1)
 
 	switch platform {
+
 	case "bugcrowd":
 		newData := stringToStruct[Bugcrowd](new)
+
 		for _, company := range newData {
+			var assetChanges []string
+
 			for _, inscope := range company.Targets.InScope {
 				//remove junk characters for comparison
 				target := strings.Replace(strings.Replace(strings.Replace(inscope.Target, "\t", "", -1), "\"", "", -1), "", "", -1)
+
 				if !strings.Contains(old, target) {
-					changes[company.Name] = append(changes[company.Name], target)
+					assetChanges = append(assetChanges, target)
 				}
 			}
+
+			// add changes if a company has new assets
+			if len(assetChanges) != 0 {
+				changes = append(changes, companyChanges{company.Name, company.URL, assetChanges})
+			}
 		}
+
 	case "hackerone":
 		newData := stringToStruct[Hackerone](new)
+
 		for _, company := range newData {
+			var assetChanges []string
+
 			for _, inscope := range company.Targets.InScope {
 				//remove junk characters for comparison
 				target := strings.Replace(strings.Replace(strings.Replace(inscope.AssetIdentifier, "\t", "", -1), "\"", "", -1), "", "", -1)
+
 				if !strings.Contains(old, target) {
-					changes[company.Name] = append(changes[company.Name], target)
+					assetChanges = append(assetChanges, target)
 				}
 			}
+
+			// add changes if a company has new assets
+			if len(assetChanges) != 0 {
+				changes = append(changes, companyChanges{company.Name, company.URL, assetChanges})
+			}
 		}
+
 	case "intigriti":
 		newData := stringToStruct[Intigriti](new)
+
 		for _, company := range newData {
+			var assetChanges []string
+
 			for _, inscope := range company.Targets.InScope {
 				//remove junk characters for comparison
 				target := strings.Replace(strings.Replace(strings.Replace(inscope.Endpoint, "\t", "", -1), "\"", "", -1), "", "", -1)
+
 				if !strings.Contains(old, target) {
-					changes[company.Name] = append(changes[company.Name], target)
+					assetChanges = append(assetChanges, target)
 				}
+			}
+
+			// add changes if a company has new assets
+			if len(assetChanges) != 0 {
+				changes = append(changes, companyChanges{company.Name, company.URL, assetChanges})
 			}
 		}
 	}
@@ -132,8 +174,4 @@ func loadFileToString(path string) string {
 	content, err := ioutil.ReadFile(path)
 	checkError(err)
 	return string(content)
-}
-
-func sendNotif(url string, changes map[string][]string) {
-	// to be implemented
 }
