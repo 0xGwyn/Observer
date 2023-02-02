@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,10 +11,9 @@ import (
 	"strings"
 )
 
-const discordURL string = "DISCORD WEBHOOK URL"
+const discordURL string = "DISCORD'S WEBHOOK URL"
 
 func main() {
-
 	platformUrls := map[string]string{
 		"hackerone": "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/hackerone_data.json",
 		"bugcrowd":  "https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/main/data/bugcrowd_data.json",
@@ -33,7 +33,7 @@ func main() {
 			//send changes to the discord server
 			sendNotif(discordURL, platformName, changes)
 
-			//replace newest data with the old one
+			//replace newest data with the old ones
 			saveStringToFile(platformName+".json", body)
 
 		} else {
@@ -49,8 +49,24 @@ type companyChanges struct {
 	changes []string
 }
 
+type webhookPayload struct {
+	Contents string `json:"content"`
+}
+
 func sendNotif(url, platform string, changes []companyChanges) {
 	// to be implemented
+	for _, company := range changes {
+		content := fmt.Sprintf("**%v** (%v)\n*URL*: <%v>\n*Assets*:\n```", company.name, platform, company.url)
+		for _, asset := range company.changes {
+			content += asset + "\n"
+		}
+		content += "```"
+
+		postData, err := json.Marshal(webhookPayload{Contents: content})
+		checkError(err)
+
+		http.Post(url, "application/json", bytes.NewBuffer(postData))
+	}
 }
 
 func compareTargets(old, new, platform string) []companyChanges {
@@ -162,7 +178,7 @@ func getReq(url string) string {
 	return string(rawBody)
 }
 
-func saveStringToFile(path string, content string) {
+func saveStringToFile(path, content string) {
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0644)
 	// err := ioutil.WriteFile(path, []byte(content), 0644)
 	checkError(err)
