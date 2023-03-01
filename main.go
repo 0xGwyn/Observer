@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 const discordURL string = "DISCORD'S WEBHOOK URL"
@@ -41,6 +42,8 @@ func main() {
 		}
 
 	}
+
+	healthCheck()
 }
 
 type companyChanges struct {
@@ -52,6 +55,26 @@ type companyChanges struct {
 type webhookPayload struct {
 	Contents string `json:"content"`
 }
+
+func healthCheck(){
+
+	file, err := os.OpenFile("health_check", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	time := getCurrentTime()
+	file.WriteString(time+" working fine\n")
+}
+
+func getCurrentTime() string {
+	currentTime := time.Now()
+	formattedTime := fmt.Sprintf("%v/%v/%v %v:%v:%v", currentTime.Year(), int(currentTime.Month()), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second())
+
+	return formattedTime
+}
+
 
 func sendNotif(url, platform string, changes []companyChanges) {
 	// to be implemented
