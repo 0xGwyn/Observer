@@ -68,9 +68,9 @@ func main() {
 func sendNotif(changes []companyChanges) {
 	//beautify it for discord markup
 	for _, company := range changes {
-		content := fmt.Sprintf("**%v**\n*URL*: <%v>\n*Assets*:\n```", company.name, company.url)
+		content := fmt.Sprintf("**%v**\n*URL*: <%v>\n*Assets*:\n```\n", company.name, company.url)
 		for _, asset := range company.changes {
-			content += asset + "\n"
+			content = content + asset + "\n"
 		}
 		content += "```"
 
