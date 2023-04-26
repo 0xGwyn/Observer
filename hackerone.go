@@ -79,7 +79,13 @@ func GetHackeroneChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Attributes.Name, fmt.Sprintf("https://hackerone.com/%s", newProgram.Attributes.Handle), assetChanges})
+				var programType string
+				if newProgram.Attributes.OffersBounties {
+					programType = "bug_bounty"
+				} else {
+					programType = "vdp"
+				}
+				changes = append(changes, companyChanges{newProgram.Attributes.Name, programType, fmt.Sprintf("https://hackerone.com/%s", newProgram.Attributes.Handle), assetChanges})
 			}
 		}
 

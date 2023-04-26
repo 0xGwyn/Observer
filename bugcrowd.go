@@ -10,6 +10,7 @@ const BugcrowdURL = "https://raw.githubusercontent.com/Osb0rn3/bugbounty-targets
 type BugcrowdList []struct {
 	Name         string `json:"name"`
 	ProgramURL   string `json:"program_url"`
+	LicenseKey   string `json:"license_key"`
 	TargetGroups []struct {
 		InScope bool `json:"in_scope"`
 		Targets []struct {
@@ -72,7 +73,7 @@ func GetBugcrowdChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Name, fmt.Sprintf("https://bugcrowd.com%s", newProgram.ProgramURL), assetChanges})
+				changes = append(changes, companyChanges{newProgram.Name, newProgram.LicenseKey, fmt.Sprintf("https://bugcrowd.com%s", newProgram.ProgramURL), assetChanges})
 			}
 		}
 

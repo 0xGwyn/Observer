@@ -71,7 +71,13 @@ func GetIntigritiChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Name, fmt.Sprintf("https://app.intigriti.com/programs/%s/%s/detail", newProgram.CompanyHandle, newProgram.Handle), assetChanges})
+				var programType string
+				if newProgram.MaxBounty.Value == 0 && newProgram.MinBounty.Value == 0 {
+					programType = "vdp"
+				} else {
+					programType = "bug_bounty"
+				}
+				changes = append(changes, companyChanges{newProgram.Name, programType, fmt.Sprintf("https://app.intigriti.com/programs/%s/%s/detail", newProgram.CompanyHandle, newProgram.Handle), assetChanges})
 			}
 		}
 

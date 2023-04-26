@@ -63,7 +63,13 @@ func GetYeswehackChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Title, fmt.Sprintf("https://yeswehack.com/programs/%s", newProgram.Slug), assetChanges})
+				var programType string
+				if newProgram.Vdp {
+					programType = "vdp"
+				} else {
+					programType = "bug_bounty"
+				}
+				changes = append(changes, companyChanges{newProgram.Title, programType, fmt.Sprintf("https://yeswehack.com/programs/%s", newProgram.Slug), assetChanges})
 			}
 		}
 

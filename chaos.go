@@ -54,7 +54,13 @@ func GetChaosChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Name, newProgram.URL, assetChanges})
+				var programType string
+				if newProgram.Bounty {
+					programType = "bug_bounty"
+				} else {
+					programType = "vdp"
+				}
+				changes = append(changes, companyChanges{newProgram.Name, programType, newProgram.URL, assetChanges})
 			}
 		}
 
