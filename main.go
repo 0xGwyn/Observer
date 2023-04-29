@@ -28,33 +28,45 @@ type webhookPayload struct {
 }
 
 func main() {
+
+	createDirIfNotExist("platforms")
+
 	// compare chaos changes
 	// chaosChanges := GetChaosChanges("chaos.json")
 	// send changes to the discord server
 	// sendNotif(chaosChanges)
 
 	// compare bugcrowd changes
-	bugcrowdChanges := GetBugcrowdChanges("bugcrowd.json")
+	bugcrowdChanges := GetBugcrowdChanges("platforms/bugcrowd.json")
 	// send changes to the discord server
 	sendNotif(bugcrowdChanges)
 
 	// compare hackerone changes
-	hackeroneChanges := GetHackeroneChanges("hackerone.json")
+	hackeroneChanges := GetHackeroneChanges("platforms/hackerone.json")
 	// send changes to the discord server
 	sendNotif(hackeroneChanges)
 
 	// compare yeswehack changes
-	yeswehackChanges := GetYeswehackChanges("yeswehack.json")
+	yeswehackChanges := GetYeswehackChanges("platforms/yeswehack.json")
 	// send changes to the discord server
 	sendNotif(yeswehackChanges)
 
 	// compare intigriti changes
-	intigritiChanges := GetIntigritiChanges("intigriti.json")
+	intigritiChanges := GetIntigritiChanges("platforms/intigriti.json")
 	// send changes to the discord server
 	sendNotif(intigritiChanges)
 
 	//log this program's activity
 	healthCheck()
+}
+
+func createDirIfNotExist(path string) {
+	// check if directory already exists
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		// if directory doesn't exist, create it
+		err = os.MkdirAll(path, 0755)
+		checkError(err)
+	}
 }
 
 func sendNotif(changes []companyChanges) {
