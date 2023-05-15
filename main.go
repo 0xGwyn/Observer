@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	discordURL string = "DISCORD'S WEBHOOK URL"
+	discordURL_BBP string = "BBP WEBHOOK URL"
+	discordURL_VDP string = "VDP WEBHOOK URL"
 )
 
 type companyChanges struct {
@@ -29,12 +30,8 @@ type webhookPayload struct {
 
 func main() {
 
+	// create a directory for json files
 	createDirIfNotExist("platforms")
-
-	// compare chaos changes
-	// chaosChanges := GetChaosChanges("chaos.json")
-	// send changes to the discord server
-	// sendNotif(chaosChanges)
 
 	// compare bugcrowd changes
 	bugcrowdChanges := GetBugcrowdChanges("platforms/bugcrowd.json")
@@ -81,7 +78,11 @@ func sendNotif(changes []companyChanges) {
 		postData, err := json.Marshal(webhookPayload{Contents: content})
 		checkError(err)
 
-		http.Post(discordURL, "application/json", bytes.NewBuffer(postData))
+		if company.Type == "vdp" {
+			http.Post(discordURL_VDP, "application/json", bytes.NewBuffer(postData))
+		} else {
+			http.Post(discordURL_BBP, "application/json", bytes.NewBuffer(postData))
+		}
 	}
 }
 

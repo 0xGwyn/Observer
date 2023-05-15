@@ -73,7 +73,13 @@ func GetBugcrowdChanges(file string) []companyChanges {
 
 			// add changes if a company has new assets
 			if len(assetChanges) != 0 {
-				changes = append(changes, companyChanges{newProgram.Name, newProgram.LicenseKey, fmt.Sprintf("https://bugcrowd.com%s", newProgram.ProgramURL), assetChanges})
+				var programType string
+				if newProgram.LicenseKey == "vdp_pro" || newProgram.LicenseKey == "vdp_essentials" {
+					programType = "vdp"
+				} else {
+					programType = "bbp"
+				}
+				changes = append(changes, companyChanges{newProgram.Name, programType, fmt.Sprintf("https://bugcrowd.com%s", newProgram.ProgramURL), assetChanges})
 			}
 		}
 

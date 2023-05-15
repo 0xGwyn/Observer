@@ -75,7 +75,7 @@ func GetIntigritiChanges(file string) []companyChanges {
 				if newProgram.MaxBounty.Value == 0 && newProgram.MinBounty.Value == 0 {
 					programType = "vdp"
 				} else {
-					programType = "bug_bounty"
+					programType = "bbp"
 				}
 				changes = append(changes, companyChanges{newProgram.Name, programType, fmt.Sprintf("https://app.intigriti.com/programs/%s/%s/detail", newProgram.CompanyHandle, newProgram.Handle), assetChanges})
 			}

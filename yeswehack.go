@@ -67,7 +67,7 @@ func GetYeswehackChanges(file string) []companyChanges {
 				if newProgram.Vdp {
 					programType = "vdp"
 				} else {
-					programType = "bug_bounty"
+					programType = "bbp"
 				}
 				changes = append(changes, companyChanges{newProgram.Title, programType, fmt.Sprintf("https://yeswehack.com/programs/%s", newProgram.Slug), assetChanges})
 			}

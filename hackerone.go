@@ -81,7 +81,7 @@ func GetHackeroneChanges(file string) []companyChanges {
 			if len(assetChanges) != 0 {
 				var programType string
 				if newProgram.Attributes.OffersBounties {
-					programType = "bug_bounty"
+					programType = "bbp"
 				} else {
 					programType = "vdp"
 				}
