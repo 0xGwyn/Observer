@@ -76,6 +76,8 @@ func GetBugcrowdChanges(file string) []companyChanges {
 				var programType string
 				if newProgram.LicenseKey == "vdp_pro" || newProgram.LicenseKey == "vdp_essentials" {
 					programType = "vdp"
+				} else if newProgram.LicenseKey == "ngpt_pro" || newProgram.LicenseKey == "ngpt_essentials" {
+					programType = "ngpt"
 				} else {
 					programType = "bbp"
 				}
