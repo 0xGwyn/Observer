@@ -24,8 +24,6 @@ type BugcrowdList []struct {
 			} `json:"target"`
 		} `json:"targets"`
 	} `json:"target_groups"`
-	MinRewards string `json:"min_rewards,omitempty"`
-	MaxRewards string `json:"max_rewards,omitempty"`
 }
 
 func GetBugcrowdChanges(file string) []companyChanges {
